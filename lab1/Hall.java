@@ -9,19 +9,20 @@ public class Hall {
 
         mySeats = new ArrayList<>();
         numEmpty = new ArrayList<>();
-        myBound = new ArrayList<>();
 
         try {	// read the configuration file
             Scanner inputStream = new Scanner(file);
             inputStream.useDelimiter(System.getProperty("line.separator"));
-            hallName = inputStream.next();  // System.out.println(hallName);
-            mvName = inputStream.next();  // System.out.println(mvName);
+            hallName = inputStream.next();
+            mvName = inputStream.next();
             String line;
 
             while(inputStream.hasNext()){	// splits and adds each parsed line
                 line = inputStream.next();
                 if (line == null)
                     break;
+                // line = line.replace("\n", "");
+                line = line.trim();
                 String[] row = line.split(" ");
                 mySeats.add(new ArrayList<>());
                 numEmpty.add(line.length());
@@ -36,14 +37,6 @@ public class Hall {
             System.exit(-1);
         }
         centerLine = (maxLen + 1) / 2;
-        for (int i = 0; i < numRows; i++) {
-            Bound b = new Bound();
-            b.l = (int) centerLine;
-            b.r = b.l + 1;
-//            b.r = b.l + adds;
-            b.row = i + 1;
-            myBound.add(b);
-        }
     }
 
     public String getHallName() {
@@ -55,89 +48,34 @@ public class Hall {
     }
 
     public Boolean setSeat(Query q, int num) {
-        if (num > maxLen)
+        if ((double)num > maxLen)
             return q.valid = false;
 
         TreeSet<Center> myStore = new TreeSet<>(compareSeat);
-        for (Bound b: myBound) {
-            boolean jump = false;
-            if (b.l < 1 && b.r > (int) maxLen)
-                continue;
-            if (Math.abs(b.l - centerLine) < 1) { //  && mySeats.get(b.row-1).get(b.l-1)
-                Center tmp = new Center(b.row, b.l- (num-1)/2, false);
-                int st = tmp.c - 1;
-                for (int i = st; i < tmp.c + num - 1; i++) {
-                    if (!mySeats.get(tmp.r - 1).get(i)) {
-                        st = i;
-                        jump = true;
-                        break;
+        double center;
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < maxLen; col++) {
+                if (available(row, col, num)) {
+                    center = (double)(num+1)/2 + col;
+                    int d_y = (int)numRows - 1 - row;
+                    d_y *= d_y;
+                    double d = Math.abs(center - centerLine);
+                    d *= d;
+                    d += (double)d_y;
+                    myStore.add(new Center(row, col, d));
+                    if (q.myName.equals("Brinda Sedore")) {
                     }
-                }
-                if (jump)
-                    continue;
-                tmp.dx = 0;
-                tmp.dy = numRows - b.row;
-                myStore.add(tmp);
-            } else { // the line is not empty
-                if (b.l>0 && mySeats.get(b.row-1).get(b.l-1) && b.l >= num) {
-                    Center tmp = new Center(b.row, b.l, false);
-                    for (int i = tmp.c - num; i < tmp.c; i++) {
-                        if (!mySeats.get(tmp.r - 1).get(i)) {
-                            jump = true;
-                            break;
-                        }
-                    }
-                    if (jump)
-                        continue;
-                    tmp.dx = centerLine - (float)b.l + (float)(num-1)/2;
-                    tmp.dy = numRows - b.row;
-                    myStore.add(tmp);
-                }
-                if (b.r <= maxLen && mySeats.get(b.row-1).get(b.r-1) && maxLen - b.r >= num-1) {
-                    Center tmp = new Center(b.row, b.r, true);
-                    for (int i = tmp.c - 1; i < tmp.c - 1 + num; i++) {
-                        if (!mySeats.get(tmp.r - 1).get(i)) {
-                            jump = true;
-                            break;
-                        }
-                    }
-                    if (jump)
-                        continue;
-                    tmp.dx = (float)b.r - centerLine  + (float)(num-1)/2;
-                    tmp.dy = numRows - b.row;
-                    myStore.add(tmp);
                 }
             }
-        } System.out.println(q.myName);
-        System.out.println(mySeats.get(0).toString());
+        }
         if (myStore.isEmpty())
             return q.valid = false;
-        else {
-            Center tmp = myStore.first();
-            if (tmp.dx == 0) { //System.out.println(tmp.c);
-                if (maxLen %2 != 0 && num%2 == 0)
-                    tmp.c -= 1;
-                for (int i = tmp.c - 1; i < tmp.c + num - 1; i++) {
-                    mySeats.get(tmp.r - 1).set(i, false);
-                    q.myCols.add(i+1);
-                }
-                myBound.get(tmp.r-1).l = tmp.c - 1;
-                myBound.get(tmp.r-1).r = tmp.c + num;
-            } else if (tmp.dir) { // if right
-                for (int i = tmp.c - 1; i < tmp.c - 1 + num; i++) {
-                    mySeats.get(tmp.r - 1).set(i, false);
-                    q.myCols.add(i+1);
-                }
-                myBound.get(tmp.r-1).r += num;
-            } else {
-                for (int i = tmp.c - num; i < tmp.c; i++) {
-                    mySeats.get(tmp.r - 1).set(i, false);
-                    q.myCols.add(i+1);
-                }
-                myBound.get(tmp.r-1).l -= num;
-            }
-            q.myRow = tmp.r;
+        Center tmp = myStore.first();
+        for (int x = tmp.c; x < tmp.c+num; x++) {
+            mySeats.get(tmp.r).set(x, false);
+            q.myCols.add(x+1);
         }
+        q.myRow = tmp.r + 1;
         return q.valid = true;
     }
 
@@ -145,39 +83,40 @@ public class Hall {
     Comparator<Center> compareSeat = new Comparator<Center>() {
         @Override
         public int compare(Center s1, Center s2) {
-            if (((int)s1.dx + s1.dy) != ((int)s2.dx + s2.dy))
-                return Math.round(((int)s1.dx + s1.dy) - ((int)s2.dx + s2.dy));
-            else if (s1.dy != s2.dy)
-                return s1.dy - s2.dy;
-            else return (int)s1.dx - (int)s2.dx; // only defers in x
+            if (Double.compare(s1.d, s2.d) != 0)
+                return Double.compare(s1.d, s2.d);
+            else if (s1.r != s2.r)
+                return s2.r - s1.r;
+            else return s1.c - s2.c; // only defers in x
         }
     };
+
+    private boolean available(int row, int start, int num) {
+        if (start + num > maxLen)
+            return false;
+        for (int i = start; i < start + num; i++) {
+            if (!mySeats.get(row).get(i))
+                return false;
+        }
+        return true;
+    }
 
     private List<List<Boolean>> mySeats;
     private List<Integer> numEmpty; // record num of empty seats in each row
     private String hallName;
     private String mvName;
-    private float centerLine;
+    private double centerLine;
     private int numRows = 0;
-    protected float maxLen = 0;
-    private List<Bound> myBound;
-}
-
-class Bound {
-    public int l;
-    public int r;
-    public int row;
+    protected double maxLen = 0;
 }
 
 class Center {
-    public Center(int x, int y, boolean right) {
+    public Center(int x, int y, double dis) {
         r = x;
         c = y;
-        dir = right; // left = 0; right = 1;
+        d = dis;
     }
     public int r;
     public int c;
-    public float dx;
-    public int dy;
-    public boolean dir;
+    public double d;
 }

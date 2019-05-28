@@ -13,8 +13,6 @@ public class Cinema {
         // the path is file dir, need to parse
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
-//        for (File f:listOfFiles)
-//            System.out.println(f.getName());
 
         if (listOfFiles == null) {
             System.err.println("invalid dir");
@@ -55,6 +53,7 @@ public class Cinema {
                 line = inputStream.next();
                 if (line == null)
                     break;
+                line = line.replace("\n", "");
                 String[] args = line.split(", ");
                 Query tmp = new Query();
                 tmp.myName = args[0];
@@ -70,6 +69,7 @@ public class Cinema {
     }
 
     private void findSeat(Query q, String n) {
+        n = n.trim();
         int num = Integer.parseInt(n);
         if (!mvToHall.containsKey(q.myMovie))
             return;
@@ -86,7 +86,7 @@ public class Cinema {
     public void printOrders() {
         for (Query q: myOrders) {
             String info = q.myName + "," + q.myMovie;
-            if (q.valid) { //System.out.println("<Cinema 72> !");
+            if (q.valid) {
                 info = info + "," + q.myHall + "," + q.myRow + q.colToString();}
             System.out.println(info);
         }
