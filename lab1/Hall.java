@@ -60,28 +60,56 @@ public class Hall {
 
         TreeSet<Center> myStore = new TreeSet<>(compareSeat);
         for (Bound b: myBound) {
+            boolean jump = false;
             if (b.l < 1 && b.r > (int) maxLen)
                 continue;
-            if (Math.abs(b.l - centerLine) < 1 && mySeats.get(b.row-1).get(b.l-1)) {
+            if (Math.abs(b.l - centerLine) < 1) { //  && mySeats.get(b.row-1).get(b.l-1)
                 Center tmp = new Center(b.row, b.l- (num-1)/2, false);
+                int st = tmp.c - 1;
+                for (int i = st; i < tmp.c + num - 1; i++) {
+                    if (!mySeats.get(tmp.r - 1).get(i)) {
+                        st = i;
+                        jump = true;
+                        break;
+                    }
+                }
+                if (jump)
+                    continue;
                 tmp.dx = 0;
                 tmp.dy = numRows - b.row;
                 myStore.add(tmp);
             } else { // the line is not empty
                 if (b.l>0 && mySeats.get(b.row-1).get(b.l-1) && b.l >= num) {
                     Center tmp = new Center(b.row, b.l, false);
+                    for (int i = tmp.c - num; i < tmp.c; i++) {
+                        if (!mySeats.get(tmp.r - 1).get(i)) {
+                            jump = true;
+                            break;
+                        }
+                    }
+                    if (jump)
+                        continue;
                     tmp.dx = centerLine - (float)b.l + (float)(num-1)/2;
                     tmp.dy = numRows - b.row;
                     myStore.add(tmp);
                 }
-                if (b.r < maxLen && mySeats.get(b.row-1).get(b.r-1) && maxLen - b.r >= num-1) {
+                if (b.r <= maxLen && mySeats.get(b.row-1).get(b.r-1) && maxLen - b.r >= num-1) {
                     Center tmp = new Center(b.row, b.r, true);
+                    for (int i = tmp.c - 1; i < tmp.c - 1 + num; i++) {
+                        if (!mySeats.get(tmp.r - 1).get(i)) {
+                            jump = true;
+                            break;
+                        }
+                    }
+                    if (jump)
+                        continue;
                     tmp.dx = (float)b.r - centerLine  + (float)(num-1)/2;
                     tmp.dy = numRows - b.row;
                     myStore.add(tmp);
                 }
             }
-        }
+        } System.out.println(q.myName);
+        System.out.println(mySeats.get(0).toString());
         if (myStore.isEmpty())
             return q.valid = false;
         else {
@@ -95,8 +123,7 @@ public class Hall {
                 }
                 myBound.get(tmp.r-1).l = tmp.c - 1;
                 myBound.get(tmp.r-1).r = tmp.c + num;
-            } else if (tmp.dir) {
-                // if right
+            } else if (tmp.dir) { // if right
                 for (int i = tmp.c - 1; i < tmp.c - 1 + num; i++) {
                     mySeats.get(tmp.r - 1).set(i, false);
                     q.myCols.add(i+1);
