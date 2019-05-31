@@ -67,4 +67,4 @@ An **associative array**, **map**, **symbol table**, or **dictionary** is an abs
 1. how to [load file into array](<https://magvar.wordpress.com/2011/05/18/awking-it-how-to-load-a-file-into-an-array-in-awk/>) in akw
 
 2. [awk tutorial](<http://www.grymoire.com/Unix/Awk.html#uh-23>) with example scripts
-3. wiki page [awk](<https://en.wikipedia.org/wiki/AWK#Self-contained_AWK_scripts>)
+3. wiki page [awk](<https://en.wikipedia.org/wiki/AWK)
