@@ -1,2 +1,5 @@
 # Methods-and-tools-for-big-data
-Ve472
+
+
+
+Labs and programming assignments for ve572.
