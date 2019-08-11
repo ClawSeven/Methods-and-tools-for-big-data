@@ -1,0 +1,78 @@
+name
+- nconst 
+- primaryName
+- birthYear
+- deathYear
+- primaryProfession
+- knownForTitles
+-------------------------------
+
+-------------------------------
+
+akas 
+- titleId
+- ordering
+- title
+- region
+- language
+- types
+- attributes
+- isOriginalTitle
+-------------------------------
+
+-------------------------------
+
+title_basics
+- tconst
+- titleType
+- primaryTitle
+- originalTitle
+- isAdult
+- startYear
+- endYear
+- runtimeMinutes
+- genres
+-------------------------------
+'tt0000001', 'short', 'Carmencita', 'Carmencita', '0', '1894',
+  '\\N',
+  '1',
+  'Documentary,Short'
+-------------------------------
+
+crew
+- tconst
+- directors
+- writers
+-------------------------------
+'tt0000001', 'nm0005690', '\\N'
+-------------------------------
+
+episode
+- tconst
+- parentTconst
+- seasonNumber
+- episodeNumber
+-------------------------------
+'tt0041951', 'tt0041038', '1', '9'
+-------------------------------
+
+principals
+- tconst
+- ordering
+- nconst
+- category
+- job
+- characters
+-------------------------------
+'tt0000001', '1', 'nm1588970', 'self', '\\N', '["Herself"]'
+-------------------------------
+
+ratings
+- tconst
+- averageRating
+- numVotes
+-------------------------------
+'tt0000001', 5.8, 1521
+-------------------------------
+
+

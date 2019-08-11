@@ -1,0 +1,93 @@
+title_list
+
+[name.basics.tsv]
+create table name
+(
+nconst varchar(10) not null,
+primaryName text not null,
+birthYear varchar(4) not null,
+deathYear varchar(4) not null,
+primaryProfession text not null,
+knownForTitles text not null,
+primary key(nconst)
+);
+.separator "\t"
+.import name.basics.tsv name
+
+
+[title.akas.tsv]
+create table akas 
+(
+titleId varchar(10) not null,
+ordering varchar(2) not null,
+title text not null,
+region varchar(2) not null,
+language text not null,
+types text not null,
+attributes text not null,
+isOriginalTitle varchar(1) not null
+);
+.separator "\t"
+.import title.akas.tsv akas
+
+
+[title.basics.tsv]
+create table title_basics
+(
+tconst varchar(10) not null,
+titleType varchar(10) not null,
+primaryTitle text not null,
+originalTitle text not null,
+isAdult varchar(1) not null,
+startYear varchar(4) not null,
+endYear varchar(4) not null,
+runtimeMinutes varchar(3) not null,
+genres text not null
+);
+.import title.basics.tsv title_basics
+
+
+[title.crew.tsv]
+create table crew 
+(
+tconst varchar(10) not null,
+directors text not null,
+writers varchar(10)
+);
+.import title.crew.tsv crew
+
+
+[title.episode.tsv]
+create table episode
+(
+tconst varchar(10) not null,
+parentTconst varchar(10) not null,
+seasonNumber varchar(3) not null,
+episodeNumber varchar(3) not null
+);
+.import title.episode.tsv episode
+
+
+[title.principals.tsv]
+create table principals
+(
+tconst varchar(10) not null,
+ordering varchar(2) not null,
+nconst varchar(10) not null,
+category text not null, 
+job text not null,
+characters text not null
+);
+.import title.principals.tsv principals
+
+[title.ratings.tsv]
+create table ratings
+(
+tconst varchar(10) not null,
+averageRating real not null,
+numVotes int not null
+);
+.import title.ratings.tsv ratings
+
+
+SELECT DISTINCT column_list FROM table_list

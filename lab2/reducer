@@ -1,0 +1,10 @@
+#! /bin/bash
+
+# IFILE="testin2"			# input file
+# OFILE="testout2"		# output file
+
+
+awk -F "\t" '{ max = $2; for (i = 2; i < NF+1; i++) { if($i > max){max=$i;} }
+	print $1 max}' # < $IFILE # > $OFILE
+
+exit 0
