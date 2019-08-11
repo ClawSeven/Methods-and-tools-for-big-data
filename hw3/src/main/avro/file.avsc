@@ -1,0 +1,9 @@
+{"namespace": "file.avro",
+   "type": "record",
+   "name": "Avfile",
+   "fields": [
+     {"name": "filename", "type": "string"},
+     {"name": "filecontent",  "type": "bytes"},
+     {"name": "checksum", "type": "string"}
+   ]
+}
